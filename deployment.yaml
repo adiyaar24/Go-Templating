@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name | default "guestbook-ui" }}
+spec:
+  replicas: {{ .Values.replicas | default 1 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 3 }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appLabel | default "guestbook-ui" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appLabel | default "guestbook-ui" }}
+    spec:
+      containers:
+      - image: {{ .Values.image | default "gcr.io/heptio-images/ks-guestbook-demo:0.2" }}
+        name: {{ .Values.containerName | default "guestbook-ui" }}
+        ports:
+        - containerPort: {{ .Values.containerPort | default 80 }}
+{{- $rawEnvVars := default "" .Values.serviceVariables.envVarsJson }}
+{{- if and $rawEnvVars (hasPrefix "{" $rawEnvVars) }}
+{{- $envMap := fromJson $rawEnvVars }}
+{{- if $envMap }}
+        env:
+{{- range $key, $value := $envMap }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
