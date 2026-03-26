@@ -1,0 +1,39 @@
+service:
+  name: GuestBook Service Code
+  identifier: GuestBook
+  orgIdentifier: default
+  projectIdentifier: default_project
+  serviceDefinition:
+    spec:
+      manifests:
+        - manifest:
+            identifier: gotemplateing
+            type: K8sManifest
+            spec:
+              store:
+                type: HarnessCode
+                spec:
+                  gitFetchType: Branch
+                  paths:
+                    - deployment.yaml
+                    - service.yaml
+                  repoName: go-templating
+                  branch: main
+              valuesPaths:
+                - values.yaml
+              skipResourceVersioning: false
+              enableDeclarativeRollback: false
+      artifacts:
+        primary: {}
+      variables:
+        - name: envVarsJson
+          type: String
+          description: ""
+          required: false
+          value: "{\"env\":\"key\",\"abc\":\"def\"}"
+        - name: replicas
+          type: String
+          description: ""
+          required: false
+          value: "5"
+    type: Kubernetes
