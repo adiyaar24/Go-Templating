@@ -1,0 +1,12 @@
+name: guestbook-ui
+appLabel: guestbook-ui
+replicas: 1
+revisionHistoryLimit: 3
+image: gcr.io/heptio-images/ks-guestbook-demo:0.2
+containerName: guestbook-ui
+containerPort: 80
+
+serviceVariables:
+  # Expected format from Harness service variable:
+  # {"env":"key","abc":"def"}
+  envVarsJson: '<+serviceVariables.envVarsJson>'
